@@ -1,27 +1,69 @@
-# Codecademy string manipulation
-highlighted_poems = "Afterimages:Audre Lorde:1997,  The Shadow:William Carlos Williams:1915, Ecstasy:Gabriela Mistral:1925,   Georgia Dusk:Jean Toomer:1923,   Parting Before Daybreak:An Qi:2014, The Untold Want:Walt Whitman:1871, Mr. Grumpledump's Song:Shel Silverstein:2004, Angel Sound Mexico City:Carmen Boullosa:2013, In Love:Kamala Suraiyya:1965, Dream Variations:Langston Hughes:1994, Dreamwood:Adrienne Rich:1987"
+# Allows the user to code and decode text using a Caesar Cipher
+# Shifts each of the letters in the message along the alphabet
+# Codes and decodes given an offset, or brute forces an unknown offset.
 
-print(highlighted_poems)
-highlighted_poems_list = highlighted_poems.split(",")
-print(highlighted_poems_list)
+operation_mode = input("Would you like to 'encode', 'decode' or 'brute force' a text?: ")
+message = list(input("Input your message: "))
+alphabet = ("abcdefghijklmnopqrstuvwxyz")
 
-highlighted_poems_stripped = []
-for item in highlighted_poems_list:
-  highlighted_poems_stripped.append(item.strip())
-print(highlighted_poems_stripped)
+# Enodes by shifting letters forward in the alphabet
+if operation_mode == "encode":
+    def ceasar_cypher_encoder(message):
+        offset = int(input("Input the required offset: "))
+        new_message = []
+        for letter in message:
+            if letter in alphabet:
+                letter_offset = alphabet.index(letter)+ offset
+                if letter_offset < 26:
+                    letter_replaced = alphabet[letter_offset]
+                    new_message.append(letter_replaced)
+                else:
+                    letter_replaced = alphabet[letter_offset % 26]
+                    new_message.append(letter_replaced)
+            else:
+                new_message.append(letter)
+        return ("".join(new_message))
+    print(ceasar_cypher_encoder(message))
 
-highlighted_poems_details = []
-for item in highlighted_poems_stripped:
-  highlighted_poems_details.append(item.split(":"))
+# Decodes by shifting letters backwards in the alphabet.
+elif operation_mode == "decode":
+    def ceasar_cypher_decoder(message):
+        offset = int(input("Input the required offset: "))
+        new_message = []
+        for letter in message:
+            if letter in alphabet:
+                letter_offset = (alphabet.index(letter) - offset)
+                if letter_offset >= 0:
+                    new_message.append(alphabet[letter_offset])
+                else:
+                    new_message.append(alphabet[letter_offset + 26])
+            else:
+                new_message.append(letter)
+        return ("".join(new_message))
+    print(ceasar_cypher_decoder(message))
 
-titles = []
-poets = []
-dates = []
+# Brute forces the code by testing each possible offset 
+# Asks the user to check for correct decoding
+elif operation_mode == "brute force":
+    offset = 1
+    def ceasar_cypher_brute(message):
+        new_message = []
+        for letter in message:
+            if letter in alphabet:
+                letter_offset = (alphabet.index(letter) - offset)
+                if letter_offset >= 0:
+                    new_message.append(alphabet[letter_offset])
+                else:
+                    letter_replaced = alphabet[letter_offset + 26]
+                    new_message.append(letter_replaced)
+            else:
+                new_message.append(letter)
+        return ("".join(new_message))
+    print(ceasar_cypher_brute(message))
+    solved_question = input("Enter 'Y' if it looks like words: ")
+    while solved_question != "Y":
+        offset += 1
+        print(offset)
+        print(ceasar_cypher_brute(message))
+        solved_question = input("Does it look like words? 'Y' or 'N': ")
 
-for detail in highlighted_poems_details:
-  titles.append(detail[0])
-  poets.append(detail[1])
-  dates.append(detail[2])
-
-for item in range(0, len(titles)):
-  print("The poem {} was published by {} in {}".format(titles[item], poets[item], dates[item]))
